@@ -70,7 +70,8 @@
             var celda = nuevaFila.insertCell(-1)
             var input = document.createElement('input')
             input.setAttribute('type', 'text')
-            input.setAttribute('class', i + '-' + j)
+            input.setAttribute('data-fila', i)
+            input.setAttribute('data-columna', j)
             input.setAttribute('size', '3')
             celda.appendChild(input)
           }
@@ -119,7 +120,7 @@
       function validarEntero(parametros) {
         for (var i = 0; i < parametros.length; i++) {
           if (typeof(parametros[i]) === "object") {
-            for (var j = 0; j < parametros.length; j++) {
+            for (var j = 0; j < parametros[i].length; j++) {
               if (!es.entero(parametros[i][j])) {
                 return false
               }
@@ -134,7 +135,7 @@
       function validarNumero(parametros) {
         for (var i = 0; i < parametros.length; i++) {
           if (typeof(parametros[i]) === "object") {
-            for (var j = 0; j < parametros.length; j++) {
+            for (var j = 0; j < parametros[i].length; j++) {
               if (!es.numero(parametros[i][j])) {
                 return false
               }
@@ -153,7 +154,7 @@
             if (arreglo[i] === undefined) {
               arreglo[i] = new Array()
             }
-            arreglo[i][j] = tabla.getElementsByClassName(i + '-' + j)[0].value
+            arreglo[i][j] = tabla.querySelectorAll('[data-fila="'+i+'"][data-columna="'+j+'"]')[0].value
           }
         }
         return arreglo
@@ -162,7 +163,7 @@
       function ponerEnTabla(matriz, tabla) {
         for (i = 0; i < matriz.length; i++) {
           for (j = 0; j < matriz[0].length; j++) {
-            tabla.getElementsByClassName(i + '-' + j)[0].value = matriz[i][j]
+            tabla.querySelectorAll('[data-fila="'+i+'"][data-columna="'+j+'"]')[0].value = matriz[i][j]
           }
         }
       }
