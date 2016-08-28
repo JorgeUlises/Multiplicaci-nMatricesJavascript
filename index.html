@@ -77,19 +77,73 @@
         }
       }
 
-      function validarNoVacio(parametros) {
+      var es = {
+        vacio : function (str) {
+          if (str === '' || str === null){
+            return true
+          } else {
+            return false
+          }
+        },
+        entero : function (str) {
+          if (str === parseInt(str,10).toString()){
+            return true
+          } else {
+            return false
+          }
+        },
+        numero : function (str) {
+          if (str === parseFloat(str).toString()){
+            return true
+          } else {
+            return false
+          }
+        }
+      }
+
+      function validarVacio(parametros) {
         for (var i = 0; i < parametros.length; i++) {
-          if (typeof(parametros) === "object") {
+          if (typeof(parametros[i]) === "object") {
             for (var j = 0; j < parametros.length; j++) {
-              if (parametros[i][j] === '') {
+              if (es.vacio(parametros[i][j])) {
                 return true
               }
             }
-          } else if (parametros[i] === '') {
+          } else if (es.vacio(parametros[i])) {
             return true
           }
         }
         return false
+      }
+
+      function validarEntero(parametros) {
+        for (var i = 0; i < parametros.length; i++) {
+          if (typeof(parametros[i]) === "object") {
+            for (var j = 0; j < parametros.length; j++) {
+              if (!es.entero(parametros[i][j])) {
+                return false
+              }
+            }
+          } else if (!es.entero(parametros[i])) {
+            return false
+          }
+        }
+        return true
+      }
+
+      function validarNumero(parametros) {
+        for (var i = 0; i < parametros.length; i++) {
+          if (typeof(parametros[i]) === "object") {
+            for (var j = 0; j < parametros.length; j++) {
+              if (!es.numero(parametros[i][j])) {
+                return false
+              }
+            }
+          } else if (!es.numero(parametros[i])) {
+            return false
+          }
+        }
+        return true
       }
 
       function convertirAArreglo(filas, columnas, tabla) {
@@ -124,14 +178,19 @@
         var columnasB = formulario.elements['columnas'].value
         var matrizB = document.getElementById("matrizB")
 
-        if (validarNoVacio([filasA, columnasA, filasB, columnasB])) {
-          window.alert('Algunos campos se encuentran vacíos')
-          return
-        }
-
-        if (!(columnasA === filasB)) {
-          window.alert('El número de columnas de la matriz A no es igual al número de filas de la matriz B')
-          return
+        try {
+          if (validarVacio([filasA, columnasA, filasB, columnasB])) {
+            throw new Error('Algunos campos se encuentran vacíos')
+          }
+          if (!validarEntero([filasA, columnasA, filasB, columnasB])) {
+            throw new Error('Algunos campos no son enteros')
+          }
+          if (!(columnasA === filasB)) {
+            throw new Error('El número de columnas de la matriz A no es igual al número de filas de la matriz B')
+          }
+        } catch (e) {
+          window.alert(e)
+          return e
         }
 
         dibujarMatriz(filasA, columnasA, matrizA)
@@ -170,14 +229,22 @@
         matrizA = convertirAArreglo(filasA, columnasA, matrizA)
         matrizB = convertirAArreglo(filasB, columnasB, matrizB)
 
-        if (validarNoVacio(matrizA)) {
-          window.alert('Algunos campos de la matriz A se encuentran vacíos')
-          return
-        }
-
-        if (validarNoVacio(matrizB)) {
-          window.alert('Algunos campos de la matriz B se encuentran vacíos')
-          return
+        try {
+          if (validarVacio(matrizA)) {
+            throw new Error('Algunos campos de la matriz A se encuentran vacíos')
+          }
+          if (validarVacio(matrizB)) {
+            throw new Error('Algunos campos de la matriz B se encuentran vacíos')
+          }
+          if (!validarNumero(matrizA)) {
+            throw new Error('Algunos campos de la matriz A no son números')
+          }
+          if (!validarNumero(matrizB)) {
+            throw new Error('Algunos campos de la matriz B no son números')
+          }
+        } catch (e) {
+          window.alert(e)
+          return e
         }
 
         //console.log(matrizA, matrizB)
